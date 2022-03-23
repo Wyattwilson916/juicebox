@@ -1,25 +1,5 @@
+const { rows } = require("pg/lib/defaults");
 const { client, getAllUsers, createUser } = require("./index");
-
-async function createInitialUsers() {
-    try {
-      console.log("Starting to create users...")
-      
-      const albert = await createUser({ username: 'albert', password: 'bertie99' });
-      const sandra = await createUser({ username: 'sandra', password: 'sandra123' });
-      const glamgal = await createUser({ username: 'glamgal', password: 'glamgal123' });
-
-      console.log(albert);
-      console.log(sandra);
-      console.log(glamgal);
-
-      console.log('Finished creating users!');
-
-    } catch (error) {
-
-      console.log('Error creating users!');
-      throw error;
-    } 
-}
 
 async function dropTables() {
   try {
@@ -44,7 +24,10 @@ async function createTables() {
       CREATE TABLE users (
         id SERIAL PRIMARY KEY,
         username varchar(255) UNIQUE NOT NULL,
-        password varchar(255) NOT NULL
+        password varchar(255) NOT NULL,
+        name VARCHAR(255) NOT NULL,
+        location VARCHAR(255) NOT NULL,
+        active BOOLEAN DEFAULT true
       );
     `);
 
@@ -54,6 +37,24 @@ async function createTables() {
     throw error; // we pass the error up to the function that calls createTables
   }
 }
+
+async function createInitialUsers() {
+    try {
+      console.log("Starting to create users...")
+      
+      await createUser({ username: 'albert', password: 'bertie99', name: 'albert', location: 'Florida'});
+      await createUser({ username: 'sandra', password: 'sandra123', name: 'sandra', location: 'Texas'});
+      await createUser({ username: 'glamgal', password: 'glamgal123', name: 'glamgal', location: 'Illinois'});
+
+      console.log('Finished creating users!');
+
+    } catch (error) {
+
+      console.log('Error creating users!');
+      throw error;
+    } 
+}
+
 
 async function rebuildDB() {
   try {
