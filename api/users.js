@@ -2,6 +2,8 @@ const express = require("express");
 const usersRouter = express.Router();
 const jwt = require("jsonwebtoken");
 
+require("dotenv").config();
+
 usersRouter.use((req, res, next) => {
   console.log("A request is being made to /users");
 
@@ -29,7 +31,6 @@ usersRouter.post("/login", async (req, res, next) => {
 
   try {
     const user = await getUserByUsername(username);
-    console.log(user, "!!!!!!!!!");
     if (user && user.password == password) {
       const token = jwt.sign(
         {
