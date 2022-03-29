@@ -7,10 +7,18 @@ const jwt = require("jsonwebtoken");
 const { getUserById } = require("../db");
 const { JWT_SECRET } = process.env;
 
+apiRouter.use((req, res, next) => {
+  if (req.user) {
+    console.log("User is set:", req.user);
+  }
+
+  next();
+});
+
 apiRouter.use(async (req, res, next) => {
   const prefix = "Bearer ";
   const auth = req.header("Authorization");
-
+  
   if (!auth) {
     next();
   } else if (auth.startsWith(prefix)) {
@@ -43,12 +51,11 @@ apiRouter.use("/posts", postsRouter);
 const tagsRouter = require("./tags");
 apiRouter.use("/tags", tagsRouter);
 
-
 apiRouter.use((error, req, res, next) => {
-    res.send({
-        name: error.name,
-        message: error.message
-    });
+  res.send({
+    name: error.name,
+    message: error.message,
+  });
 });
 
 module.exports = apiRouter;
